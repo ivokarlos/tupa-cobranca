@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Padaria Tupã — Cobranças</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --azul: #5A83F9;
+    --azul-escuro: #1D1E4C;
+    --azul-hover: #4470e8;
+    --bg: #F4F5F9;
+    --card: #FFFFFF;
+    --border: rgba(0,0,0,0.08);
+    --border-focus: #5A83F9;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
+    --success-bg: #f0fdf4;
+    --success-border: #86efac;
+    --success-text: #166534;
+    --danger-bg: #fef2f2;
+    --danger-border: #fca5a5;
+    --danger-text: #991b1b;
+    --info-bg: #eff6ff;
+    --info-border: #93c5fd;
+    --info-text: #1e40af;
+    --warn-bg: #fffbeb;
+    --warn-border: #fcd34d;
+    --warn-text: #92400e;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .app {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 16px 12px 40px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--azul-escuro);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 24px rgba(29,30,76,0.18);
+  }
+  .header-icon {
+    width: 42px; height: 42px;
+    background: var(--azul);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .header-text .title { color: #fff; font-size: 16px; font-weight: 600; }
+  .header-text .sub { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 1px; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px 6px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .tab.active {
+    background: var(--azul);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(90,131,249,0.3);
+  }
+  .tab svg { width: 15px; height: 15px; }
+
+  /* SCREEN */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-title svg { color: var(--azul); width: 15px; height: 15px; }
+
+  /* FORM */
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    margin-top: 12px;
+  }
+  label:first-of-type { margin-top: 0; }
+
+  input[type="text"], input[type="email"], textarea, select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus { border-color: var(--border-focus); background: #fff; }
+  textarea { resize: vertical; min-height: 65px; font-size: 13px; line-height: 1.5; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* DIA BADGE */
+  .dia-badge {
+    display: none;
+    margin-top: 8px;
+    background: var(--info-bg);
+    border: 1px solid var(--info-border);
+    color: var(--info-text);
+    border-radius: var(--radius-sm);
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* LOJA ROW */
+  .loja-row {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #fafafa;
+    transition: border-color 0.15s;
+  }
+  .loja-row:focus-within { border-color: var(--azul); background: #fff; }
+  .loja-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .loja-badge {
+    width: 30px; height: 30px;
+    background: var(--azul-escuro);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+  .loja-name { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .valor-wrap { position: relative; }
+  .valor-prefix {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px; font-weight: 600;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  .valor-wrap input {
+    padding-left: 34px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+    border: 1.5px solid var(--border);
+  }
+  .valor-wrap input:focus { border-color: var(--azul); }
+
+  /* TOTAL */
+  .total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0 0;
+    border-top: 1.5px solid var(--border);
+    margin-top: 4px;
+  }
+  .total-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+  .total-value { font-size: 22px; font-weight: 600; color: var(--azul-escuro); }
+
+  /* BOTÕES */
+  .btn-enviar {
+    width: 100%;
+    background: var(--azul-escuro);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    font-size: 17px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 8px;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(29,30,76,0.2);
+    letter-spacing: 0.01em;
+  }
+  .btn-enviar:hover { background: #2a2c6a; box-shadow: 0 6px 20px rgba(29,30,76,0.28); }
+  .btn-enviar:active { transform: scale(0.98); }
+  .btn-enviar.loading { background: #9ca3af; pointer-events: none; box-shadow: none; }
+  .btn-enviar svg { width: 22px; height: 22px; }
+
+  .btn-salvar {
+    width: 100%;
+    background: var(--azul);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s;
+    box-shadow: 0 2px 10px rgba(90,131,249,0.25);
+  }
+  .btn-salvar:hover { background: var(--azul-hover); }
+
+  .btn-google {
+    width: 100%;
+    background: #DB4437;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    margin-top: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .btn-google:hover { background: #c23321; }
+  .btn-google svg { width: 18px; height: 18px; }
+
+  /* STATUS */
+  .status {
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .status svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+  .status.success { display: flex; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
+  .status.danger  { display: flex; background: var(--danger-bg);  color: var(--danger-text);  border: 1px solid var(--danger-border); }
+  .status.info    { display: flex; background: var(--info-bg);    color: var(--info-text);    border: 1px solid var(--info-border); }
+  .status.warn    { display: flex; background: var(--warn-bg);    color: var(--warn-text);    border: 1px solid var(--warn-border); }
+  .status ul { margin: 4px 0 0 2px; padding: 0; list-style: none; }
+  .status ul li::before { content: "• "; }
+
+  .warn-box {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    color: var(--warn-text);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    margin-bottom: 12px;
+    display: flex; gap: 8px; align-items: flex-start;
+    line-height: 1.5;
+  }
+  .warn-box svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+
+  .hint { font-size: 11px; color: var(--text-light); margin-top: 5px; line-height: 1.4; }
+
+  .setup-link {
+    text-align: center; margin-top: 14px; padding: 12px;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px; color: var(--azul);
+    cursor: pointer;
+  }
+
+  ol.instrucoes {
+    font-size: 13px; color: var(--text-muted);
+    line-height: 2; padding-left: 18px;
+  }
+  ol.instrucoes strong { color: var(--text); }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--azul-escuro);
+  }
+
+  @media (max-width: 380px) {
+    .app { padding: 10px 8px 32px; }
+    .total-value { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-icon">🍞</div>
+    <div class="header-text">
+      <div class="title">Padaria Tupã</div>
+      <div class="sub">Cobrança mensal — Lojas Conceitos</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showScreen('mensal')" id="tab-mensal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Enviar
+    </button>
+    <button class="tab" onclick="showScreen('config')" id="tab-config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Config
+    </button>
+    <button class="tab" onclick="showScreen('gmail')" id="tab-gmail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Gmail
+    </button>
+  </div>
+
+  <!-- ===== TELA ENVIAR ===== -->
+  <div id="screen-mensal" class="screen active">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Período e vencimento
+      </div>
+      <div class="grid-2">
+        <div>
+          <label>Mês de referência</label>
+          <input type="text" id="mes-ref" placeholder="ex: Maio/26" />
+        </div>
+        <div>
+          <label>Data de vencimento</label>
+          <input type="text" id="dt-venc" placeholder="DD/MM/AA" oninput="calcDia()" />
+        </div>
+      </div>
+      <div id="dia-badge" class="dia-badge"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Valores por loja
+      </div>
+      <div id="lojas-valores"></div>
+      <div class="total-row">
+        <span class="total-label">Total geral</span>
+        <span class="total-value" id="total">R$ 0,00</span>
+      </div>
+    </div>
+
+    <div id="status-enviar" class="status"></div>
+
+    <button class="btn-enviar" onclick="enviarTodos()" id="btn-env">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Enviar todos os e-mails
+    </button>
+
+    <div class="setup-link" onclick="showScreen('gmail')">
+      🔑 Primeira vez? Configure o acesso ao Gmail
+    </div>
+
+  </div>
+
+  <!-- ===== TELA CONFIG ===== -->
+  <div id="screen-config" class="screen">
+    <div class="warn-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Estas configurações só precisam ser alteradas quando mudar algum dado bancário ou e-mail dos clientes.
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Dados do remetente
+      </div>
+      <label>Nome da empresa</label>
+      <input type="text" id="cfg-empresa" />
+      <label>CNPJ</label>
+      <input type="text" id="cfg-cnpj" />
+      <label>E-mail remetente</label>
+      <input type="email" id="cfg-from" />
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Dados bancários
+      </div>
+      <label>Banco</label>
+      <input type="text" id="cfg-banco" />
+      <label>Agência</label>
+      <input type="text" id="cfg-agencia" />
+      <label>Conta corrente</label>
+      <input type="text" id="cfg-conta" />
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        E-mails por loja
+      </div>
+      <div id="lojas-config"></div>
+    </div>
+
+    <button class="btn-salvar" onclick="salvarConfig()">💾 Salvar configurações</button>
+    <div id="status-config" class="status"></div>
+  </div>
+
+  <!-- ===== TELA GMAIL ===== -->
+  <div id="screen-gmail" class="screen">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Credenciais OAuth — Gmail
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:14px;">Configure uma vez só. Após salvar, os e-mails saem automaticamente.</p>
+
+      <label>Client ID</label>
+      <input type="text" id="cfg-cid" placeholder="xxxxx.apps.googleusercontent.com" />
+
+      <label>Client Secret</label>
+      <input type="text" id="cfg-cs" placeholder="GOCSPX-..." />
+
+      <label>Access Token</label>
+      <textarea id="cfg-at" placeholder="ya29.a0..." style="min-height:75px;font-family:'DM Mono',monospace;font-size:11px;"></textarea>
+
+      <label>Refresh Token</label>
+      <textarea id="cfg-rt" placeholder="1//04..." style="min-height:60px;font-family:'DM Mono',monospace;font-size:11px;"></textarea>
+      <p class="hint">O refresh token renova o acesso automaticamente — sem precisar reautorizar.</p>
+
+      <button class="btn-salvar" onclick="salvarGmail()" style="margin-top:14px;">💾 Salvar credenciais</button>
+      <div id="status-gmail" class="status"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Como obter os tokens
+      </div>
+      <ol class="instrucoes">
+        <li>Acesse <strong>console.cloud.google.com</strong></li>
+        <li>APIs e serviços → Credenciais → edite "Tupã Cobranças"</li>
+        <li>Acesse <strong>developers.google.com/oauthplayground</strong></li>
+        <li>Engrenagem ⚙️ → marque "Use your own OAuth credentials"</li>
+        <li>Cole Client ID e Secret → feche</li>
+        <li>No campo de escopos cole: <code>https://www.googleapis.com/auth/gmail.send</code></li>
+        <li>Clique "Authorize APIs" → faça login → autorize</li>
+        <li>Clique "Exchange authorization code for tokens"</li>
+        <li>Copie o access_token e refresh_token e cole acima</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DIAS = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+
+const BASE_EMAILS = [
+  'compras2@cocobambujk.com','felipe.gravina@cocobambu.com',
+  'ronaldosilva.cocobambujk@gmail.com','ivokarlos@gmail.com',
+  'compras2@cocobambu.com','juliano.rodrigues@cocobambu.com.br',
+  'fernando.moreira@cocobambu.com','claudio.martins@cocobambu.com',
+  'bruno.lima@cocobambu.com','magna.carvalho@cocobambu.com',
+  'magna@cocobambujk.com','auditor.plazasul@cocobambu.com',
+  'auditor.tiete@cocobambu.com'
+];
+
+function mergeEmails(extra) {
+  const seen = new Set(BASE_EMAILS.map(e => e.toLowerCase()));
+  const list = [...BASE_EMAILS];
+  (extra||[]).forEach(e => { if (!seen.has(e.toLowerCase())) { seen.add(e.toLowerCase()); list.push(e); }});
+  return list.join(', ');
+}
+
+const LOJAS_DEFAULT = [
+  { id:'eldorado', nome:'Eldorado',       badge:'EL', emails: mergeEmails([]) },
+  { id:'patio',    nome:'Pátio Paulista', badge:'PP', emails: mergeEmails([]) },
+  { id:'plazasul', nome:'Plaza Sul',      badge:'PS', emails: mergeEmails([]) },
+  { id:'bourbon',  nome:'Bourbon',        badge:'BO', emails: mergeEmails(['compras.bourbon@cocobambu.com']) },
+  { id:'tiete',    nome:'Tietê Plaza',    badge:'TP', emails: mergeEmails([]) },
+  { id:'jk',       nome:'JK Matriz',      badge:'JK', emails: mergeEmails([]) },
+];
+
+const CFG_DEFAULT = {
+  empresa:  'PADARIA E CONFEITARIA TUPA LTDA',
+  cnpj:     '50.382.084/0001-43',
+  emailFrom:'ivokarlos@gmail.com',
+  banco:    'BANCO SANTANDER',
+  agencia:  '3717',
+  conta:    '13.000.430-7',
+  lojas:    LOJAS_DEFAULT,
+  clientId: '715628946040-etfsikbdl7p35dhv6a2tdq5mrn4tp0ii.apps.googleusercontent.com',
+  clientSecret: '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',
+  accessToken:  '',
+  refreshToken: '',
+};
+
+function loadCfg() {
+  try {
+    const s = localStorage.getItem('tupa_cfg_v3');
+    if (!s) return JSON.parse(JSON.stringify(CFG_DEFAULT));
+    const saved = JSON.parse(s);
+    // merge lojas to preserve new lojas if added
+    if (!saved.lojas || saved.lojas.length < CFG_DEFAULT.lojas.length) {
+      saved.lojas = CFG_DEFAULT.lojas;
+    }
+    return Object.assign({}, CFG_DEFAULT, saved);
+  } catch(e) { return JSON.parse(JSON.stringify(CFG_DEFAULT)); }
+}
+
+function saveCfg(c) { localStorage.setItem('tupa_cfg_v3', JSON.stringify(c)); }
+
+let cfg = loadCfg();
+
+// ── SCREENS ──────────────────────────────────────────
+function showScreen(name) {
+  ['mensal','config','gmail'].forEach(n => {
+    document.getElementById('screen-' + n).classList.remove('active');
+    document.getElementById('tab-' + n).classList.remove('active');
+  });
+  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'mensal') renderMensal();
+  if (name === 'config') renderConfig();
+  if (name === 'gmail')  renderGmail();
+}
+
+// ── DIA DA SEMANA ─────────────────────────────────────
+function calcDia() {
+  const val = document.getElementById('dt-venc').value.trim();
+  const badge = document.getElementById('dia-badge');
+  const m = val.match(/^(\d{2})\/(\d{2})\/(\d{2,4})$/);
+  if (!m) { badge.style.display = 'none'; return; }
+  let [,d,mo,y] = m;
+  if (y.length === 2) y = '20' + y;
+  const dt = new Date(+y, +mo-1, +d);
+  if (isNaN(dt)) { badge.style.display = 'none'; return; }
+  const nome = DIAS[dt.getDay()];
+  badge.textContent = '📅 Vencimento: ' + nome;
+  badge.style.display = 'block';
+}
+
+function getDiaSemanaStr() {
+  const val = document.getElementById('dt-venc').value.trim();
+  const m = val.match(/^(\d{2})\/(\d{2})\/(\d{2,4})$/);
+  if (!m) return '';
+  let [,d,mo,y] = m;
+  if (y.length === 2) y = '20' + y;
+  const dt = new Date(+y, +mo-1, +d);
+  if (isNaN(dt)) return '';
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const diff = Math.round((dt - hoje) / 86400000);
+  const nome = DIAS[dt.getDay()];
+  if (diff >= 0 && diff <= 6) return 'próxima ' + nome;
+  if (diff >= 7 && diff <= 13) return nome + ' que vem';
+  return nome;
+}
+
+// ── RENDER MENSAL ─────────────────────────────────────
+function renderMensal() {
+  const cont = document.getElementById('lojas-valores');
+  cont.innerHTML = '';
+  cfg.lojas.forEach(loja => {
+    const div = document.createElement('div');
+    div.className = 'loja-row';
+    div.innerHTML = `
+      <div class="loja-header">
+        <div class="loja-badge">${loja.badge}</div>
+        <span class="loja-name">${loja.nome}</span>
+      </div>
+      <div class="valor-wrap">
+        <span class="valor-prefix">R$</span>
+        <input type="text" inputmode="decimal" placeholder="0,00"
+          id="val-${loja.id}" oninput="atualizarTotal()" />
+      </div>`;
+    cont.appendChild(div);
+  });
+  atualizarTotal();
+}
+
+function parseBRL(s) { return parseFloat((s||'').replace(/\./g,'').replace(',','.')) || 0; }
+function formatBRL(n) { return n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function atualizarTotal() {
+  let t = 0;
+  cfg.lojas.forEach(l => { const el = document.getElementById('val-' + l.id); if (el) t += parseBRL(el.value); });
+  document.getElementById('total').textContent = 'R$ ' + formatBRL(t);
+}
+
+// ── RENDER CONFIG ─────────────────────────────────────
+function renderConfig() {
+  document.getElementById('cfg-empresa').value = cfg.empresa || '';
+  document.getElementById('cfg-cnpj').value    = cfg.cnpj    || '';
+  document.getElementById('cfg-from').value    = cfg.emailFrom || '';
+  document.getElementById('cfg-banco').value   = cfg.banco   || '';
+  document.getElementById('cfg-agencia').value = cfg.agencia || '';
+  document.getElementById('cfg-conta').value   = cfg.conta   || '';
+
+  const cont = document.getElementById('lojas-config');
+  cont.innerHTML = '';
+  cfg.lojas.forEach(loja => {
+    const div = document.createElement('div');
+    div.style.marginBottom = '16px';
+    div.innerHTML = `
+      <div class="loja-header" style="margin-bottom:6px;">
+        <div class="loja-badge">${loja.badge}</div>
+        <span class="loja-name">${loja.nome}</span>
+      </div>
+      <textarea id="emails-${loja.id}" style="min-height:70px;font-size:12px;">${loja.emails||''}</textarea>`;
+    cont.appendChild(div);
+  });
+}
+
+function salvarConfig() {
+  cfg.empresa   = document.getElementById('cfg-empresa').value.trim();
+  cfg.cnpj      = document.getElementById('cfg-cnpj').value.trim();
+  cfg.emailFrom = document.getElementById('cfg-from').value.trim();
+  cfg.banco     = document.getElementById('cfg-banco').value.trim();
+  cfg.agencia   = document.getElementById('cfg-agencia').value.trim();
+  cfg.conta     = document.getElementById('cfg-conta').value.trim();
+  cfg.lojas.forEach(l => { const el = document.getElementById('emails-' + l.id); if (el) l.emails = el.value.trim(); });
+  saveCfg(cfg);
+  showStatus('status-config', 'success', '✅ Configurações salvas com sucesso!');
+}
+
+// ── RENDER GMAIL ──────────────────────────────────────
+function renderGmail() {
+  document.getElementById('cfg-cid').value = cfg.clientId     || '';
+  document.getElementById('cfg-cs').value  = cfg.clientSecret || '';
+  document.getElementById('cfg-at').value  = cfg.accessToken  || '';
+  document.getElementById('cfg-rt').value  = cfg.refreshToken || '';
+}
+
+function salvarGmail() {
+  cfg.clientId     = document.getElementById('cfg-cid').value.trim();
+  cfg.clientSecret = document.getElementById('cfg-cs').value.trim();
+  cfg.accessToken  = document.getElementById('cfg-at').value.trim();
+  cfg.refreshToken = document.getElementById('cfg-rt').value.trim();
+  saveCfg(cfg);
+  showStatus('status-gmail', 'success', '✅ Credenciais salvas!');
+}
+
+// ── OAUTH REFRESH ─────────────────────────────────────
+async function refreshToken() {
+  if (!cfg.refreshToken || !cfg.clientId || !cfg.clientSecret) return false;
+  try {
+    const r = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id:     cfg.clientId,
+        client_secret: cfg.clientSecret,
+        refresh_token: cfg.refreshToken,
+        grant_type:    'refresh_token'
+      })
+    });
+    const d = await r.json();
+    if (d.access_token) { cfg.accessToken = d.access_token; saveCfg(cfg); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ── EMAIL ─────────────────────────────────────────────
+function montarCorpo(loja, valor, mesRef, dtVenc, diaSem) {
+  const diaStr = diaSem ? ` (${diaSem})` : '';
+  return `Bom dia,\n\nSeguem abaixo os dados bancários para os pagamentos das lojas CONCEITOS (Eldorado, Pátio Paulista, Tietê Plaza, Bourbon, Plaza Sul e JK Matriz) referente aos fornecimentos da Padaria Tupã realizados em ${mesRef}:\n\nSolicito que os pagamentos sejam realizados no dia ${dtVenc}${diaStr} de acordo com os dados bancários abaixo:\n\n${cfg.empresa}\nCNPJ: ${cfg.cnpj}\n${cfg.banco}\nAGÊNCIA: ${cfg.agencia}\nC/C: ${cfg.conta}\n\nValor devido — ${loja.nome.toUpperCase()}: R$ ${valor}\n\nAtenciosamente,`;
+}
+
+function toB64url(str) {
+  return btoa(unescape(encodeURIComponent(str)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+
+function criarRFC(toList, assunto, corpo, from) {
+  const subj = '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(assunto))) + '?=';
+  const raw = [
+    `From: ${from}`,
+    `To: ${toList.join(', ')}`,
+    `Subject: ${subj}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    toB64url(corpo)
+  ].join('\r\n');
+  return toB64url(raw);
+}
+
+async function enviarEmail(toList, assunto, corpo, token, from) {
+  const raw = criarRFC(toList, assunto, corpo, from);
+  const r = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ raw })
+  });
+  if (r.status === 401) {
+    const ok = await refreshToken();
+    if (ok) return enviarEmail(toList, assunto, corpo, cfg.accessToken, from);
+    throw new Error('Token expirado. Reautorize na aba Gmail.');
+  }
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(e.error?.message || r.statusText);
+  }
+  return r.json();
+}
+
+async function enviarTodos() {
+  const mesRef = document.getElementById('mes-ref').value.trim();
+  const dtVenc = document.getElementById('dt-venc').value.trim();
+
+  if (!mesRef || !dtVenc) {
+    showStatus('status-enviar', 'danger', '⚠️ Preencha o mês de referência e a data de vencimento.');
+    return;
+  }
+  if (!cfg.accessToken) {
+    showStatus('status-enviar', 'danger', '🔑 Configure o acesso ao Gmail primeiro (aba Gmail).');
+    return;
+  }
+
+  let algum = false;
+  cfg.lojas.forEach(l => { const el = document.getElementById('val-' + l.id); if (el && parseBRL(el.value) > 0) algum = true; });
+  if (!algum) {
+    showStatus('status-enviar', 'danger', '⚠️ Preencha ao menos um valor antes de enviar.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-env');
+  btn.classList.add('loading');
+  btn.innerHTML = '⏳ Enviando...';
+
+  const diaSem = getDiaSemanaStr();
+  const ok = [], erros = [];
+
+  for (const loja of cfg.lojas) {
+    const el = document.getElementById('val-' + loja.id);
+    const val = el ? el.value.trim() : '';
+    if (!val || parseBRL(val) === 0) continue;
+    const emails = loja.emails ? loja.emails.split(',').map(e => e.trim()).filter(Boolean) : [];
+    if (!emails.length) { erros.push(`${loja.nome}: sem e-mails configurados`); continue; }
+    const assunto = `Fornecimentos Tupã MATRIZ E CONCEITOS - ${mesRef}`;
+    const corpo = montarCorpo(loja, val, mesRef, dtVenc, diaSem);
+    try {
+      await enviarEmail(emails, assunto, corpo, cfg.accessToken, cfg.emailFrom);
+      ok.push(loja.nome);
+    } catch(e) {
+      erros.push(`${loja.nome}: ${e.message}`);
+    }
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar todos os e-mails';
+
+  if (!erros.length && ok.length) {
+    showStatus('status-enviar', 'success', `✅ ${ok.length} e-mail(s) enviado(s) com sucesso!`, ok);
+  } else if (erros.length) {
+    const msg = (ok.length ? `${ok.length} enviado(s). ` : '') + 'Problemas:';
+    showStatus('status-enviar', 'danger', msg, erros);
+  } else {
+    showStatus('status-enviar', 'info', 'Nenhum e-mail enviado. Verifique os valores.');
+  }
+}
+
+function showStatus(id, type, msg, list) {
+  const el = document.getElementById(id);
+  el.className = 'status ' + type;
+  let html = `<span>${msg}</span>`;
+  if (list && list.length) {
+    html += '<ul>' + list.map(l => `<li>${l}</li>`).join('') + '</ul>';
+  }
+  el.innerHTML = html;
+}
+
+// ── INIT ──────────────────────────────────────────────
+renderMensal();
+</script>
+</body>
+</html>
